@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "916954193203",
+    "project_id": "homeworkproject-4537c",
+    "storage_bucket": "homeworkproject-4537c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916954193203:android:022fe9758448f1ebb23246",
+        "android_client_info": {
+          "package_name": "com.example.homeworkproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "916954193203-jae7jruc250por13lidkl63v2gc2bkfa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSBo5Xo4SwJRCC_vZ7JzZotz87nI1tZGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "916954193203-jae7jruc250por13lidkl63v2gc2bkfa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
