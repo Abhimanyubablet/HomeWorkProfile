@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -35,30 +34,43 @@ class HomeFragment : Fragment() {
         val rowView= inflater.inflate(R.layout.fragment_home, container, false)
 
 
+        rImage = rowView.findViewById(R.id.rImage);
+        val names=rowView.findViewById<TextView>(R.id.name)
+        val ages=rowView.findViewById<TextView>(R.id.age)
+        val auth = FirebaseAuth.getInstance().currentUser?.uid
         val db= FirebaseFirestore.getInstance()
 
-            db.collection("User Rejestration")
+        if (auth != null) {
+            db.collection("User Rejestration").document(auth)
                 .get()
                 .addOnSuccessListener { snapshot ->
+                    if (snapshot != null && snapshot.exists()) { // Check if snapshot is not null and exists
 
-                        val myData: MutableList<DataModel> = snapshot.toObjects(DataModel::class.java)
+                        val myData: DataModel? = snapshot.toObject(DataModel::class.java)
                         if (myData != null) { // Check if myData is not null
 
 //                            FashionList.add(myData)
 
-                            val list = rowView.findViewById<ListView>(R.id.list_item)
+                            names.setText(myData.name)
+                            ages.setText(myData.age)
+//                            emails.setText(myData.email)
+                            Glide.with(this)
+                                .load(myData.imageUrl)
+                                .error(R.drawable.ic_launcher_background)
+                                .into(rImage)
 
 
-
-                            list.adapter = activity?.let { it1 -> ListViewAdapter(it1, myData) }
-
-                        }else {
-                            Log.e(ContentValues.TAG, "Snapshot is null or doesn't exist")
+                        } else {
+                            Log.e(ContentValues.TAG, "DataModel is null")
                         }
+                    } else {
+                        Log.e(ContentValues.TAG, "Snapshot is null or doesn't exist")
+                    }
                 }
                 .addOnFailureListener { e ->
                     Log.e(ContentValues.TAG, "Error adding document", e)
                 }
+        }
 
         return rowView
     }
