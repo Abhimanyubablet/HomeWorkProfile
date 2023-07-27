@@ -25,6 +25,8 @@ class RegistrationPageActivity : AppCompatActivity() {
     private  lateinit var imageView: ImageView
     private lateinit var selectImg:TextView
     private var storageRef= Firebase.storage.reference
+    lateinit var downloadUrl: String
+
     lateinit var auth: FirebaseAuth
     private lateinit var uri: Uri
 
@@ -33,14 +35,17 @@ class RegistrationPageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration_page)
 
+
+        auth = Firebase.auth
+        val authCurrent=FirebaseAuth.getInstance().currentUser?.uid
         val db= FirebaseFirestore.getInstance()
 
-        val name=findViewById<EditText>(R.id.name)
-        val age=findViewById<EditText>(R.id.age)
+//        val name=findViewById<EditText>(R.id.name)
+//        val age=findViewById<EditText>(R.id.age)
         val email=findViewById<EditText>(R.id.email)
         val phone=findViewById<EditText>(R.id.phone)
-        imageView=findViewById<ImageView>(R.id.image)
-        val selectImg=findViewById<TextView>(R.id.select_img)
+//        imageView=findViewById<ImageView>(R.id.image)
+//        val selectImg=findViewById<TextView>(R.id.select_img)
         val signUp=findViewById<Button>(R.id.signup)
         val signIn=findViewById<TextView>(R.id.signin)
 
@@ -50,68 +55,69 @@ class RegistrationPageActivity : AppCompatActivity() {
 //        }
 
 
-        auth = Firebase.auth
 
-
-        val galleryImage=registerForActivityResult(
-            ActivityResultContracts.GetContent(),
-            ActivityResultCallback {
-                imageView.setImageURI(it)
-                if (it != null) {
-                    uri =it
-                }
-            }
-        )
-
-        selectImg.setOnClickListener {
-            galleryImage.launch("image/*")
-        }
+//        val galleryImage=registerForActivityResult(
+//            ActivityResultContracts.GetContent(),
+//            ActivityResultCallback {
+//                imageView.setImageURI(it)
+//                if (it != null) {
+//                    uri =it
+//                }
+//            }
+//        )
+//
+//        selectImg.setOnClickListener {
+//            galleryImage.launch("image/*")
+//        }
 
 
         signUp.setOnClickListener {
-            val user = hashMapOf(
-                "name" to name.text.toString(),
-                "age" to age.text.toString(),
-                "email" to email.text.toString(),
-                "phone" to phone.text.toString()
-            )
-
-
-            db.collection("users").add(user)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Successfully data upload", Toast.LENGTH_SHORT).show()
-//                    startActivity(Intent(this,FetchDataActivity::class.java))
-                    name.text.clear()
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "failed", Toast.LENGTH_SHORT).show()
-                }
-
-
-
-            if (uri != null) {
-                val fileName = System.currentTimeMillis().toString()
-                val imageRef = storageRef.child("image/").child(fileName)
-
-                imageRef.putFile(uri)
-                    .addOnSuccessListener { taskSnapshot ->
-                        // File uploaded successfully
-                        Toast.makeText(this, "Upload Image Successfully", Toast.LENGTH_SHORT).show()
-
-                        taskSnapshot.storage.downloadUrl.addOnSuccessListener { downloadUri ->
-                            val downloadUrl = downloadUri.toString()
-                            // Process the download URL or save it to the database
-                        }.addOnFailureListener { exception ->
-                            Toast.makeText(this, exception.toString() + "download URL", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    .addOnFailureListener { exception ->
-                        // File upload failed, handle the error
-                        Toast.makeText(this, "Upload image $exception", Toast.LENGTH_SHORT).show()
-                    }
-            } else {
-                Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show()
-            }
+//            val user = hashMapOf(
+//                "name" to name.text.toString(),
+//                "age" to age.text.toString(),
+//                "email" to email.text.toString(),
+//                "phone" to phone.text.toString(),
+//            )
+//
+//
+//            if (authCurrent != null) {
+//                db.collection("users").document(authCurrent)
+//                    .set(user)
+//                    .addOnSuccessListener {
+//                        Toast.makeText(this, "Successfully data upload DocumentSnapshot added with ID", Toast.LENGTH_SHORT).show()
+//        //
+//                        name.text.clear()
+//                    }
+//                    .addOnFailureListener {
+//                        Toast.makeText(this, "failed", Toast.LENGTH_SHORT).show()
+//                    }
+//            }
+//
+//
+//
+//            if (uri != null) {
+//                val fileName = System.currentTimeMillis().toString()
+//                val imageRef = storageRef.child("image/").child(fileName)
+//
+//                imageRef.putFile(uri)
+//                    .addOnSuccessListener { taskSnapshot ->
+//                        // File uploaded successfully
+//                        Toast.makeText(this, "Upload Image Successfully", Toast.LENGTH_SHORT).show()
+//
+//                        taskSnapshot.storage.downloadUrl.addOnSuccessListener { downloadUri ->
+//                            val downloadUrl = downloadUri.toString()
+//                            // Process the download URL or save it to the database
+//                        }.addOnFailureListener { exception ->
+//                            Toast.makeText(this, exception.toString() + "download URL", Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
+//                    .addOnFailureListener { exception ->
+//                        // File upload failed, handle the error
+//                        Toast.makeText(this, "Upload image $exception", Toast.LENGTH_SHORT).show()
+//                    }
+//            } else {
+//                Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show()
+//            }
 
             auth.createUserWithEmailAndPassword(email.text.toString() , phone.text.toString())
                 .addOnSuccessListener {
@@ -120,8 +126,7 @@ class RegistrationPageActivity : AppCompatActivity() {
                     Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
 
-            name.text.clear()
-            age.text.clear()
+
             email.text.clear()
             phone.text.clear()
         }

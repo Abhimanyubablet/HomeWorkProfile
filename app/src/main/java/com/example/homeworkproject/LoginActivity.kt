@@ -1,9 +1,11 @@
 package com.example.homeworkproject
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -18,6 +20,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.hbb20.CountryCodePicker
 import java.util.concurrent.TimeUnit
@@ -62,6 +65,7 @@ class LoginActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     Toast.makeText(this, "Successfully Login", Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this,DashBoardActivity::class.java))
+
                 }.addOnFailureListener{
                     Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
@@ -149,9 +153,32 @@ class LoginActivity : AppCompatActivity() {
                 val credencial = GoogleAuthProvider.getCredential(it.idToken, null)
                 auth.signInWithCredential(credencial)
                     .addOnSuccessListener {
-                        Toast.makeText(this, "" + it.user?.displayName+ it.user?.email+" Succesfull", Toast.LENGTH_SHORT)
-                            .show()
-                        startActivity(Intent(this,DashBoardActivity::class.java))
+
+                        val auth=FirebaseAuth.getInstance().currentUser?.uid
+
+                        val db = FirebaseFirestore.getInstance()
+                        val user = hashMapOf(
+                            "name" to it.user?.displayName,
+                            "image" to it.user?.photoUrl,
+                            "email" to it.user?.email,
+                            "number" to it.user?.phoneNumber
+                        )
+                        // Add a new document with a generated ID
+                        if ( auth != null) {
+                            db.collection("users").document( auth)
+                                .set(user)
+                                .addOnSuccessListener {
+                                    Log.d(TAG, "DocumentSnapshot added with ID")
+                                    startActivity(Intent(this,DashBoardActivity::class.java))
+
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(TAG, "Error adding document", e)
+                                }
+                        }
+//                        Toast.makeText(this, "" + it.user?.displayName+ it.user?.email+" Succesfull", Toast.LENGTH_SHORT)
+//                            .show()
+//                        startActivity(Intent(this,DashBoardActivity::class.java))
                     }
                     .addOnFailureListener {
                         Toast.makeText(this, "" + it.message, Toast.LENGTH_SHORT).show()

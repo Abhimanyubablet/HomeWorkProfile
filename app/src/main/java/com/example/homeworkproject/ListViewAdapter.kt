@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 
 class ListViewAdapter(val context: Context, var arrayList: List<DataModel>): BaseAdapter() {
     override fun getCount(): Int {
@@ -27,6 +29,12 @@ class ListViewAdapter(val context: Context, var arrayList: List<DataModel>): Bas
         val data=arrayList[p0]
         rowView.findViewById<TextView>(R.id.get_name).text=data.name
         rowView.findViewById<TextView>(R.id.get_email).text=data.email
+
+        Glide.with(context)
+            .load(data.imageUrl)
+            .error(R.drawable.ic_launcher_background)
+            .into(rowView.findViewById<ImageView>(R.id.get_image))
+
         return  rowView
     }
 

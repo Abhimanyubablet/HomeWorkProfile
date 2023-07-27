@@ -1,16 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".PeopleFragment">
 
-    <ListView
-        android:id="@+id/list_item"
+<!--    <ListView-->
+<!--        android:id="@+id/list_item"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        tools:ignore="MissingConstraints" />-->
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/images"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:civ_border_width="4dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="80dp" />
+
+    <TextView
+        android:id="@+id/names"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints" />
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:layout_below="@id/images"
+        />
+    <TextView
+        android:id="@+id/emails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:layout_below="@id/names"
+        />
+<!--    <EditText-->
+<!--        android:id="@+id/numbers"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="20dp"-->
+<!--        />-->
+    <Button
+        android:id="@+id/edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/white"
+        android:layout_margin="20dp"
+        android:hint="Edit"
+        android:layout_gravity="center"
+        android:layout_below="@id/emails"
+        />
+
+
 
     <Button
         android:id="@+id/logout"
@@ -19,7 +64,7 @@
         android:text="Logout"
         android:textColor="@color/white"
         android:layout_margin="20dp"
-        android:layout_below="@id/list_item"
+        android:layout_below="@id/edit"
         />
 
 </RelativeLayout>
